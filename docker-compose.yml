@@ -1,0 +1,29 @@
+# Local development — just the database.
+# Run the API with:  ./mvnw spring-boot:run -Dspring-boot.run.arguments="--spring.profiles.active=dev"
+#
+#   docker compose up -d          # MySQL on localhost:3306 (db "pethotel", user pethotel/pethotel)
+#   docker compose down           # stop  (add -v to wipe the data volume)
+
+services:
+  db:
+    image: mysql:8.4
+    container_name: pethotelgo-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: pethotel
+      MYSQL_USER: ${MYSQL_USER:-pethotel}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-pethotel}
+      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+    command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "${MYSQL_USER:-pethotel}", "-p${MYSQL_PASSWORD:-pethotel}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  mysql_data:

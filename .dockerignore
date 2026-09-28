@@ -1,0 +1,10 @@
+target/*
+!target/pethotelgo-*.jar
+.git
+.gitignore
+README*
+*.md
+.idea
+*.iml
+node_modules
+.DS_Store

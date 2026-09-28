@@ -1,0 +1,121 @@
+# ==============================================================================
+# docker-compose.backend.yml — sobe SOMENTE o backend (API Spring Boot).
+#
+# Quando usar: o frontend está no bucket OCI + Cloudflare Worker
+# (ver ../PASSOS_DEPLOY.md), então a instância NÃO precisa de Nginx nem do
+# container do frontend — só a API escutando na porta 8080.
+#
+# ------------------------------------------------------------------------------
+# MODOS DE USO
+# ------------------------------------------------------------------------------
+#
+#   ./mvnw clean package -DskipTests   # o jar é buildado FORA do Docker (o
+#                                      # Dockerfile só o copia — compilar Kotlin
+#                                      # dentro da imagem estoura a RAM de 1 GB)
+#   cp .env.backend.example .env       # e preencha os valores
+#
+#   1) API + MySQL gerenciado na Oracle Cloud (MySQL HeatWave, ver CAMINHO abaixo):
+#        # no .env: preencha JDBC_DATABASE_URL / _USERNAME / _PASSWORD
+#        docker compose -f docker-compose.backend.yml up -d --build
+#
+#   2) API + MySQL local em container (dev / teste):
+#        docker compose -f docker-compose.backend.yml --profile local-db up -d --build
+#        # (deixe JDBC_DATABASE_URL em branco no .env -> usa o serviço "db" abaixo)
+#
+#   Parar:   docker compose -f docker-compose.backend.yml --profile local-db down
+#   Logs:    docker compose -f docker-compose.backend.yml logs -f api
+#   Testar:  curl -i http://localhost:8080/api/actuator/health   -> 200 {"status":"UP"}
+#
+# Requer Docker Compose v2.20+ (usa depends_on.required).
+#
+# ------------------------------------------------------------------------------
+# CAMINHO — criar o banco gerenciado na Oracle Cloud (MySQL HeatWave — Always Free)
+# ------------------------------------------------------------------------------
+#
+# O shape "MySQL.Free" (1 OCPU / 8 GB, gerenciado, backup automático) está no
+# Always Free. Provisionado via oci-cli — ver `scripts/provision-mysql-oci.sh`.
+# Resumo do que o script faz:
+#
+#    1. oci mysql db-system create --shape-name MySQL.Free
+#         --subnet-id <subnet privada da VCN>  --mysql-version 8.4.x
+#         --admin-username pethotel  --admin-password <senha>
+#         --data-storage-size-in-gbs 50  --is-highly-available false
+#    2. Security List / NSG da subnet: Ingress TCP 3306 (e 33060) com
+#       Source = CIDR da VCN (NUNCA 0.0.0.0/0). MySQL DB systems não têm IP público.
+#    3. A base "pethotel" é criada automaticamente pelo parâmetro do db-system
+#       (ou: mysqlsh --sql -e "CREATE DATABASE pethotel" a partir da app).
+#    4. Pegar o "endpoint" (hostname privado) do db-system e no .env:
+#         JDBC_DATABASE_URL=jdbc:mysql://<endpoint-privado>:3306/pethotel
+#         JDBC_DATABASE_USERNAME=pethotel
+#         JDBC_DATABASE_PASSWORD=<senha>
+#       O Flyway aplica as migrações (classpath:db/migration) no 1º start da API.
+#
+# Alternativa sem serviço gerenciado: profile local-db (serviço "db" abaixo) —
+# MySQL em container, dados no volume "pethotelgo_mysql_data", backup por sua conta.
+# ==============================================================================
+
+services:
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: pethotelgo-api:latest
+    container_name: pethotelgo-api
+    restart: unless-stopped
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+
+      # --- Banco ---
+      # Sem JDBC_DATABASE_URL no .env  -> usa o container local "db" (profile local-db).
+      # Com MySQL na Oracle Cloud      -> defina os 3 no .env (ver CAMINHO acima).
+      JDBC_DATABASE_URL: ${JDBC_DATABASE_URL:-jdbc:mysql://db:3306/pethotel}
+      JDBC_DATABASE_USERNAME: ${JDBC_DATABASE_USERNAME:-pethotel}
+      JDBC_DATABASE_PASSWORD: ${JDBC_DATABASE_PASSWORD:?defina JDBC_DATABASE_PASSWORD no .env}
+      HIKARI_MAX_POOL_SIZE: ${HIKARI_MAX_POOL_SIZE:-5}
+
+      # --- App ---
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS}
+      JWT_SECRET: ${JWT_SECRET:?defina JWT_SECRET no .env (openssl rand -base64 64)}
+      JWT_EXPIRATION: ${JWT_EXPIRATION:-3600000}
+      JWT_REFRESH_EXPIRATION: ${JWT_REFRESH_EXPIRATION:-604800000}
+      SPRING_FLYWAY_ENABLED: "true"
+      SPRING_FLYWAY_LOCATIONS: classpath:db/migration
+    ports:
+      # Sem Nginx na frente: a API fica exposta direto. Restrinja o Ingress da
+      # porta 8080 (Security List / NSG da VCN) aos IPs da Cloudflare
+      # (https://www.cloudflare.com/ips/) — ver PASSOS_DEPLOY.md §4.4.
+      - "8080:8080"
+    mem_limit: 512m
+    memswap_limit: 512m
+    depends_on:
+      db:
+        condition: service_healthy
+        required: false   # só espera o "db" quando --profile local-db está ativo
+
+  # MySQL local — só sobe com:  --profile local-db
+  db:
+    image: mysql:8.4
+    container_name: pethotelgo-db
+    profiles: ["local-db"]
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: pethotel
+      MYSQL_USER: ${JDBC_DATABASE_USERNAME:-pethotel}
+      MYSQL_PASSWORD: ${JDBC_DATABASE_PASSWORD:?defina JDBC_DATABASE_PASSWORD no .env}
+      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+    command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "127.0.0.1:3306:3306"   # só loopback, para debug local; remova se não usar
+    mem_limit: 512m
+    memswap_limit: 512m
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "${JDBC_DATABASE_USERNAME:-pethotel}", "-p${JDBC_DATABASE_PASSWORD:-pethotel}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  mysql_data:

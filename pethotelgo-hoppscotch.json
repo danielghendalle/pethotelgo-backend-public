@@ -1,0 +1,687 @@
+[
+  {
+    "v": 5,
+    "name": "PetHotel GO",
+    "folders": [
+      {
+        "v": 1,
+        "name": "Auth",
+        "folders": [],
+        "requests": [
+          {
+            "v": "8",
+            "id": "auth-register",
+            "name": "Register",
+            "method": "POST",
+            "endpoint": "<<baseUrl>>/auth/register",
+            "headers": [
+              { "key": "Content-Type", "value": "application/json", "active": true }
+            ],
+            "params": [],
+            "auth": { "authType": "none", "authActive": false },
+            "body": {
+              "contentType": "application/json",
+              "body": "{\n  \"name\": \"Daniel Ghendalle\",\n  \"email\": \"daniel@email.com\",\n  \"password\": \"senha123\"\n}"
+            },
+            "preRequestScript": "",
+            "testScript": "const res = pw.response.body;\nif (res.token) {\n  pw.env.set(\"token\", res.token);\n}\nif (res.refreshToken) {\n  pw.env.set(\"refresh_token\", res.refreshToken);\n}",
+            "requestVariables": []
+          },
+          {
+            "v": "8",
+            "id": "auth-login",
+            "name": "Login",
+            "method": "POST",
+            "endpoint": "<<baseUrl>>/auth/login",
+            "headers": [
+              { "key": "Content-Type", "value": "application/json", "active": true }
+            ],
+            "params": [],
+            "auth": { "authType": "none", "authActive": false },
+            "body": {
+              "contentType": "application/json",
+              "body": "{\n  \"email\": \"daniel@email.com\",\n  \"password\": \"senha123\"\n}"
+            },
+            "preRequestScript": "",
+            "testScript": "const res = pw.response.body;\nif (res.token) {\n  pw.env.set(\"token\", res.token);\n}\nif (res.refreshToken) {\n  pw.env.set(\"refresh_token\", res.refreshToken);\n}",
+            "requestVariables": []
+          },
+          {
+            "v": "8",
+            "id": "auth-firebase-login",
+            "name": "Firebase Login",
+            "method": "POST",
+            "endpoint": "<<baseUrl>>/auth/firebase-login",
+            "headers": [
+              { "key": "Content-Type", "value": "application/json", "active": true }
+            ],
+            "params": [],
+            "auth": { "authType": "none", "authActive": false },
+            "body": {
+              "contentType": "application/json",
+              "body": "{\n  \"idToken\": \"<<firebase_id_token>>\"\n}"
+            },
+            "preRequestScript": "",
+            "testScript": "const res = pw.response.body;\nif (res.token) {\n  pw.env.set(\"token\", res.token);\n}",
+            "requestVariables": []
+          },
+          {
+            "v": "8",
+            "id": "auth-refresh",
+            "name": "Refresh Token",
+            "method": "POST",
+            "endpoint": "<<baseUrl>>/auth/refresh",
+            "headers": [
+              { "key": "Content-Type", "value": "application/json", "active": true }
+            ],
+            "params": [],
+            "auth": { "authType": "none", "authActive": false },
+            "body": {
+              "contentType": "application/json",
+              "body": "{\n  \"refreshToken\": \"<<refresh_token>>\"\n}"
+            },
+            "preRequestScript": "",
+            "testScript": "const res = pw.response.body;\nif (res.token) {\n  pw.env.set(\"token\", res.token);\n}\nif (res.refreshToken) {\n  pw.env.set(\"refresh_token\", res.refreshToken);\n}",
+            "requestVariables": []
+          },
+          {
+            "v": "8",
+            "id": "auth-logout",
+            "name": "Logout",
+            "method": "POST",
+            "endpoint": "<<baseUrl>>/auth/logout",
+            "headers": [],
+            "params": [],
+            "auth": { "authType": "inherit", "authActive": true },
+            "body": { "contentType": null, "body": null },
+            "preRequestScript": "",
+            "testScript": "",
+            "requestVariables": []
+          },
+          {
+            "v": "8",
+            "id": "auth-me",
+            "name": "Get Current User",
+            "method": "GET",
+            "endpoint": "<<baseUrl>>/auth/me",
+            "headers": [],
+            "params": [],
+            "auth": { "authType": "inherit", "authActive": true },
+            "body": { "contentType": null, "body": null },
+            "preRequestScript": "",
+            "testScript": "",
+            "requestVariables": []
+          },
+          {
+            "v": "8",
+            "id": "auth-debug-firebase",
+            "name": "Debug Firebase",
+            "method": "GET",
+            "endpoint": "<<baseUrl>>/auth/debug/firebase",
+            "headers": [],
+            "params": [],
+            "auth": { "authType": "none", "authActive": false },
+            "body": { "contentType": null, "body": null },
+            "preRequestScript": "",
+            "testScript": "",
+            "requestVariables": []
+          },
+          {
+            "v": "8",
+            "id": "auth-sync-firebase",
+            "name": "Sync Firebase Users",
+            "method": "POST",
+            "endpoint": "<<baseUrl>>/auth/sync-firebase-users",
+            "headers": [],
+            "params": [],
+            "auth": { "authType": "none", "authActive": false },
+            "body": { "contentType": null, "body": null },
+            "preRequestScript": "",
+            "testScript": "",
+            "requestVariables": []
+          }
+        ],
+        "auth": { "authType": "none", "authActive": false },
+        "headers": []
+      },
+      {
+        "v": 1,
+        "name": "Owners",
+        "folders": [],
+        "requests": [
+          {
+            "v": "8",
+            "id": "owners-list",
+            "name": "List All Owners",
+            "method": "GET",
+            "endpoint": "<<baseUrl>>/owners",
+            "headers": [],
+            "params": [],
+            "auth": { "authType": "inherit", "authActive": true },
+            "body": { "contentType": null, "body": null },
+            "preRequestScript": "",
+            "testScript": "",
+            "requestVariables": []
+          },
+          {
+            "v": "8",
+            "id": "owners-get-by-id",
+            "name": "Get Owner by ID",
+            "method": "GET",
+            "endpoint": "<<baseUrl>>/owners/<<ownerId>>",
+            "headers": [],
+            "params": [],
+            "auth": { "authType": "inherit", "authActive": true },
+            "body": { "contentType": null, "body": null },
+            "preRequestScript": "",
+            "testScript": "",
+            "requestVariables": [
+              { "key": "ownerId", "value": "", "active": true }
+            ]
+          },
+          {
+            "v": "8",
+            "id": "owners-get-pets",
+            "name": "Get Owner's Pets",
+            "method": "GET",
+            "endpoint": "<<baseUrl>>/owners/<<ownerId>>/pets",
+            "headers": [],
+            "params": [],
+            "auth": { "authType": "inherit", "authActive": true },
+            "body": { "contentType": null, "body": null },
+            "preRequestScript": "",
+            "testScript": "",
+            "requestVariables": [
+              { "key": "ownerId", "value": "", "active": true }
+            ]
+          },
+          {
+            "v": "8",
+            "id": "owners-create",
+            "name": "Create Owner",
+            "method": "POST",
+            "endpoint": "<<baseUrl>>/owners",
+            "headers": [
+              { "key": "Content-Type", "value": "application/json", "active": true }
+            ],
+            "params": [],
+            "auth": { "authType": "inherit", "authActive": true },
+            "body": {
+              "contentType": "application/json",
+              "body": "{\n  \"name\": \"João Silva\",\n  \"email\": \"joao@email.com\",\n  \"phone\": \"11999999999\"\n}"
+            },
+            "preRequestScript": "",
+            "testScript": "",
+            "requestVariables": []
+          },
+          {
+            "v": "8",
+            "id": "owners-update",
+            "name": "Update Owner",
+            "method": "PUT",
+            "endpoint": "<<baseUrl>>/owners/<<ownerId>>",
+            "headers": [
+              { "key": "Content-Type", "value": "application/json", "active": true }
+            ],
+            "params": [],
+            "auth": { "authType": "inherit", "authActive": true },
+            "body": {
+              "contentType": "application/json",
+              "body": "{\n  \"name\": \"João Silva Atualizado\",\n  \"email\": \"joao.novo@email.com\",\n  \"phone\": \"11988888888\"\n}"
+            },
+            "preRequestScript": "",
+            "testScript": "",
+            "requestVariables": [
+              { "key": "ownerId", "value": "", "active": true }
+            ]
+          },
+          {
+            "v": "8",
+            "id": "owners-delete",
+            "name": "Delete Owner",
+            "method": "DELETE",
+            "endpoint": "<<baseUrl>>/owners/<<ownerId>>",
+            "headers": [],
+            "params": [],
+            "auth": { "authType": "inherit", "authActive": true },
+            "body": { "contentType": null, "body": null },
+            "preRequestScript": "",
+            "testScript": "",
+            "requestVariables": [
+              { "key": "ownerId", "value": "", "active": true }
+            ]
+          }
+        ],
+        "auth": { "authType": "inherit", "authActive": true },
+        "headers": []
+      },
+      {
+        "v": 1,
+        "name": "Pets",
+        "folders": [],
+        "requests": [
+          {
+            "v": "8",
+            "id": "pets-list",
+            "name": "List All Pets",
+            "method": "GET",
+            "endpoint": "<<baseUrl>>/pets",
+            "headers": [],
+            "params": [],
+            "auth": { "authType": "inherit", "authActive": true },
+            "body": { "contentType": null, "body": null },
+            "preRequestScript": "",
+            "testScript": "",
+            "requestVariables": []
+          },
+          {
+            "v": "8",
+            "id": "pets-get-by-id",
+            "name": "Get Pet by ID",
+            "method": "GET",
+            "endpoint": "<<baseUrl>>/pets/<<petId>>",
+            "headers": [],
+            "params": [],
+            "auth": { "authType": "inherit", "authActive": true },
+            "body": { "contentType": null, "body": null },
+            "preRequestScript": "",
+            "testScript": "",
+            "requestVariables": [
+              { "key": "petId", "value": "", "active": true }
+            ]
+          },
+          {
+            "v": "8",
+            "id": "pets-get-by-owner",
+            "name": "Get Pets by Owner",
+            "method": "GET",
+            "endpoint": "<<baseUrl>>/pets/owner/<<ownerId>>",
+            "headers": [],
+            "params": [],
+            "auth": { "authType": "inherit", "authActive": true },
+            "body": { "contentType": null, "body": null },
+            "preRequestScript": "",
+            "testScript": "",
+            "requestVariables": [
+              { "key": "ownerId", "value": "", "active": true }
+            ]
+          },
+          {
+            "v": "8",
+            "id": "pets-get-reservations",
+            "name": "Get Pet's Reservations",
+            "method": "GET",
+            "endpoint": "<<baseUrl>>/pets/<<petId>>/reservations",
+            "headers": [],
+            "params": [],
+            "auth": { "authType": "inherit", "authActive": true },
+            "body": { "contentType": null, "body": null },
+            "preRequestScript": "",
+            "testScript": "",
+            "requestVariables": [
+              { "key": "petId", "value": "", "active": true }
+            ]
+          },
+          {
+            "v": "8",
+            "id": "pets-get-stay-history",
+            "name": "Get Pet's Stay History",
+            "method": "GET",
+            "endpoint": "<<baseUrl>>/pets/<<petId>>/stay-history",
+            "headers": [],
+            "params": [],
+            "auth": { "authType": "inherit", "authActive": true },
+            "body": { "contentType": null, "body": null },
+            "preRequestScript": "",
+            "testScript": "",
+            "requestVariables": [
+              { "key": "petId", "value": "", "active": true }
+            ]
+          },
+          {
+            "v": "8",
+            "id": "pets-create",
+            "name": "Create Pet",
+            "method": "POST",
+            "endpoint": "<<baseUrl>>/pets",
+            "headers": [
+              { "key": "Content-Type", "value": "application/json", "active": true }
+            ],
+            "params": [],
+            "auth": { "authType": "inherit", "authActive": true },
+            "body": {
+              "contentType": "application/json",
+              "body": "{\n  \"ownerId\": \"<<ownerId>>\",\n  \"name\": \"Rex\",\n  \"breed\": \"Golden Retriever\",\n  \"size\": \"grande\",\n  \"sociability\": \"alta\",\n  \"needsSeparateSpace\": false,\n  \"allergies\": \"\",\n  \"specialCare\": \"\",\n  \"feedingSchedule\": \"Manhã e tarde\",\n  \"feedingAmount\": \"300g por refeição\"\n}"
+            },
+            "preRequestScript": "",
+            "testScript": "",
+            "requestVariables": []
+          },
+          {
+            "v": "8",
+            "id": "pets-update",
+            "name": "Update Pet",
+            "method": "PUT",
+            "endpoint": "<<baseUrl>>/pets/<<petId>>",
+            "headers": [
+              { "key": "Content-Type", "value": "application/json", "active": true }
+            ],
+            "params": [],
+            "auth": { "authType": "inherit", "authActive": true },
+            "body": {
+              "contentType": "application/json",
+              "body": "{\n  \"name\": \"Rex Atualizado\",\n  \"breed\": \"Golden Retriever\",\n  \"size\": \"grande\",\n  \"sociability\": \"media\",\n  \"needsSeparateSpace\": false,\n  \"allergies\": \"Nenhuma\",\n  \"specialCare\": \"Precisa de escovação diária\",\n  \"feedingSchedule\": \"Manhã, tarde e noite\",\n  \"feedingAmount\": \"250g por refeição\",\n  \"vaccinationCardUrl\": null\n}"
+            },
+            "preRequestScript": "",
+            "testScript": "",
+            "requestVariables": [
+              { "key": "petId", "value": "", "active": true }
+            ]
+          },
+          {
+            "v": "8",
+            "id": "pets-delete",
+            "name": "Delete Pet",
+            "method": "DELETE",
+            "endpoint": "<<baseUrl>>/pets/<<petId>>",
+            "headers": [],
+            "params": [],
+            "auth": { "authType": "inherit", "authActive": true },
+            "body": { "contentType": null, "body": null },
+            "preRequestScript": "",
+            "testScript": "",
+            "requestVariables": [
+              { "key": "petId", "value": "", "active": true }
+            ]
+          }
+        ],
+        "auth": { "authType": "inherit", "authActive": true },
+        "headers": []
+      },
+      {
+        "v": 1,
+        "name": "Vaccination Cards",
+        "folders": [],
+        "requests": [
+          {
+            "v": "8",
+            "id": "vaccination-upload",
+            "name": "Upload Vaccination Card",
+            "method": "POST",
+            "endpoint": "<<baseUrl>>/pets/<<petId>>/vaccination-card/upload",
+            "headers": [],
+            "params": [],
+            "auth": { "authType": "inherit", "authActive": true },
+            "body": {
+              "contentType": "multipart/form-data",
+              "body": [
+                { "key": "file", "value": "", "active": true, "isFile": true }
+              ]
+            },
+            "preRequestScript": "",
+            "testScript": "",
+            "requestVariables": [
+              { "key": "petId", "value": "", "active": true }
+            ]
+          },
+          {
+            "v": "8",
+            "id": "vaccination-get",
+            "name": "Get Vaccination Card",
+            "method": "GET",
+            "endpoint": "<<baseUrl>>/pets/<<petId>>/vaccination-card",
+            "headers": [],
+            "params": [],
+            "auth": { "authType": "inherit", "authActive": true },
+            "body": { "contentType": null, "body": null },
+            "preRequestScript": "",
+            "testScript": "",
+            "requestVariables": [
+              { "key": "petId", "value": "", "active": true }
+            ]
+          },
+          {
+            "v": "8",
+            "id": "vaccination-delete",
+            "name": "Delete Vaccination Card",
+            "method": "DELETE",
+            "endpoint": "<<baseUrl>>/pets/<<petId>>/vaccination-card",
+            "headers": [],
+            "params": [],
+            "auth": { "authType": "inherit", "authActive": true },
+            "body": { "contentType": null, "body": null },
+            "preRequestScript": "",
+            "testScript": "",
+            "requestVariables": [
+              { "key": "petId", "value": "", "active": true }
+            ]
+          }
+        ],
+        "auth": { "authType": "inherit", "authActive": true },
+        "headers": []
+      },
+      {
+        "v": 1,
+        "name": "Reservations",
+        "folders": [],
+        "requests": [
+          {
+            "v": "8",
+            "id": "reservations-list",
+            "name": "List Reservations",
+            "method": "GET",
+            "endpoint": "<<baseUrl>>/reservations",
+            "headers": [],
+            "params": [
+              { "key": "date", "value": "2026-06-08", "active": false }
+            ],
+            "auth": { "authType": "inherit", "authActive": true },
+            "body": { "contentType": null, "body": null },
+            "preRequestScript": "",
+            "testScript": "",
+            "requestVariables": []
+          },
+          {
+            "v": "8",
+            "id": "reservations-get-by-id",
+            "name": "Get Reservation by ID",
+            "method": "GET",
+            "endpoint": "<<baseUrl>>/reservations/<<reservationId>>",
+            "headers": [],
+            "params": [],
+            "auth": { "authType": "inherit", "authActive": true },
+            "body": { "contentType": null, "body": null },
+            "preRequestScript": "",
+            "testScript": "",
+            "requestVariables": [
+              { "key": "reservationId", "value": "", "active": true }
+            ]
+          },
+          {
+            "v": "8",
+            "id": "reservations-get-by-pet",
+            "name": "Get Reservations by Pet",
+            "method": "GET",
+            "endpoint": "<<baseUrl>>/reservations/pet/<<petId>>",
+            "headers": [],
+            "params": [],
+            "auth": { "authType": "inherit", "authActive": true },
+            "body": { "contentType": null, "body": null },
+            "preRequestScript": "",
+            "testScript": "",
+            "requestVariables": [
+              { "key": "petId", "value": "", "active": true }
+            ]
+          },
+          {
+            "v": "8",
+            "id": "reservations-create",
+            "name": "Create Reservation",
+            "method": "POST",
+            "endpoint": "<<baseUrl>>/reservations",
+            "headers": [
+              { "key": "Content-Type", "value": "application/json", "active": true }
+            ],
+            "params": [],
+            "auth": { "authType": "inherit", "authActive": true },
+            "body": {
+              "contentType": "application/json",
+              "body": "{\n  \"petId\": \"<<petId>>\",\n  \"ownerId\": \"<<ownerId>>\",\n  \"checkIn\": \"2026-06-10T14:00:00\",\n  \"checkOut\": \"2026-06-15T12:00:00\",\n  \"status\": \"pending\",\n  \"notes\": \"Pet precisa de atenção especial à tarde\",\n  \"dailyRate\": 80.00,\n  \"discountPercentage\": 0.00\n}"
+            },
+            "preRequestScript": "",
+            "testScript": "",
+            "requestVariables": []
+          },
+          {
+            "v": "8",
+            "id": "reservations-update",
+            "name": "Update Reservation",
+            "method": "PUT",
+            "endpoint": "<<baseUrl>>/reservations/<<reservationId>>",
+            "headers": [
+              { "key": "Content-Type", "value": "application/json", "active": true }
+            ],
+            "params": [],
+            "auth": { "authType": "inherit", "authActive": true },
+            "body": {
+              "contentType": "application/json",
+              "body": "{\n  \"petId\": \"<<petId>>\",\n  \"ownerId\": \"<<ownerId>>\",\n  \"checkIn\": \"2026-06-10T14:00:00\",\n  \"checkOut\": \"2026-06-17T12:00:00\",\n  \"status\": \"confirmed\",\n  \"notes\": \"Checkup veterinário na chegada\",\n  \"dailyRate\": 80.00,\n  \"discountPercentage\": 10.00\n}"
+            },
+            "preRequestScript": "",
+            "testScript": "",
+            "requestVariables": [
+              { "key": "reservationId", "value": "", "active": true }
+            ]
+          },
+          {
+            "v": "8",
+            "id": "reservations-update-status",
+            "name": "Update Reservation Status",
+            "method": "PATCH",
+            "endpoint": "<<baseUrl>>/reservations/<<reservationId>>/status",
+            "headers": [
+              { "key": "Content-Type", "value": "application/json", "active": true }
+            ],
+            "params": [],
+            "auth": { "authType": "inherit", "authActive": true },
+            "body": {
+              "contentType": "application/json",
+              "body": "{\n  \"status\": \"confirmed\"\n}"
+            },
+            "preRequestScript": "",
+            "testScript": "",
+            "requestVariables": [
+              { "key": "reservationId", "value": "", "active": true }
+            ]
+          },
+          {
+            "v": "8",
+            "id": "reservations-delete",
+            "name": "Delete Reservation",
+            "method": "DELETE",
+            "endpoint": "<<baseUrl>>/reservations/<<reservationId>>",
+            "headers": [],
+            "params": [],
+            "auth": { "authType": "inherit", "authActive": true },
+            "body": { "contentType": null, "body": null },
+            "preRequestScript": "",
+            "testScript": "",
+            "requestVariables": [
+              { "key": "reservationId", "value": "", "active": true }
+            ]
+          }
+        ],
+        "auth": { "authType": "inherit", "authActive": true },
+        "headers": []
+      },
+      {
+        "v": 1,
+        "name": "Stay History",
+        "folders": [],
+        "requests": [
+          {
+            "v": "8",
+            "id": "stay-history-list",
+            "name": "List All Stay Histories",
+            "method": "GET",
+            "endpoint": "<<baseUrl>>/stay-history",
+            "headers": [],
+            "params": [],
+            "auth": { "authType": "inherit", "authActive": true },
+            "body": { "contentType": null, "body": null },
+            "preRequestScript": "",
+            "testScript": "",
+            "requestVariables": []
+          },
+          {
+            "v": "8",
+            "id": "stay-history-get-by-pet",
+            "name": "Get Stay History by Pet",
+            "method": "GET",
+            "endpoint": "<<baseUrl>>/stay-history/pet/<<petId>>",
+            "headers": [],
+            "params": [],
+            "auth": { "authType": "inherit", "authActive": true },
+            "body": { "contentType": null, "body": null },
+            "preRequestScript": "",
+            "testScript": "",
+            "requestVariables": [
+              { "key": "petId", "value": "", "active": true }
+            ]
+          },
+          {
+            "v": "8",
+            "id": "stay-history-create",
+            "name": "Create Stay History",
+            "method": "POST",
+            "endpoint": "<<baseUrl>>/stay-history",
+            "headers": [
+              { "key": "Content-Type", "value": "application/json", "active": true }
+            ],
+            "params": [],
+            "auth": { "authType": "inherit", "authActive": true },
+            "body": {
+              "contentType": "application/json",
+              "body": "{\n  \"pet\": { \"id\": \"<<petId>>\" },\n  \"reservation\": { \"id\": \"<<reservationId>>\" },\n  \"checkIn\": \"2026-06-10T14:00:00Z\",\n  \"checkOut\": null,\n  \"behavior\": \"Muito tranquilo e sociável com os outros pets\",\n  \"notes\": \"Comeu bem nas duas refeições\"\n}"
+            },
+            "preRequestScript": "",
+            "testScript": "",
+            "requestVariables": []
+          },
+          {
+            "v": "8",
+            "id": "stay-history-update",
+            "name": "Update Stay History",
+            "method": "PUT",
+            "endpoint": "<<baseUrl>>/stay-history/<<stayHistoryId>>",
+            "headers": [
+              { "key": "Content-Type", "value": "application/json", "active": true }
+            ],
+            "params": [],
+            "auth": { "authType": "inherit", "authActive": true },
+            "body": {
+              "contentType": "application/json",
+              "body": "{\n  \"pet\": { \"id\": \"<<petId>>\" },\n  \"reservation\": { \"id\": \"<<reservationId>>\" },\n  \"checkIn\": \"2026-06-10T14:00:00Z\",\n  \"checkOut\": \"2026-06-15T12:00:00Z\",\n  \"behavior\": \"Excelente comportamento durante toda a estadia\",\n  \"notes\": \"Tomou banho no último dia, saiu limpo e feliz\"\n}"
+            },
+            "preRequestScript": "",
+            "testScript": "",
+            "requestVariables": [
+              { "key": "stayHistoryId", "value": "", "active": true }
+            ]
+          }
+        ],
+        "auth": { "authType": "inherit", "authActive": true },
+        "headers": []
+      }
+    ],
+    "requests": [],
+    "auth": {
+      "authType": "bearer",
+      "authActive": true,
+      "token": "<<token>>"
+    },
+    "headers": [
+      { "key": "Content-Type", "value": "application/json", "active": true }
+    ]
+  }
+]
